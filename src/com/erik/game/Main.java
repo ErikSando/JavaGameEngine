@@ -6,6 +6,7 @@ import com.erik.engine.Colour;
 import com.erik.engine.Game;
 import com.erik.engine.GameObject;
 import com.erik.engine.Vector2;
+import com.erik.engine.gfx.Image;
 
 public class Main {
 	public static void main(String[] args) {
@@ -17,6 +18,9 @@ public class Main {
 		
 		GameObject test1 = new GameObject(new Vector2(350, 200), new Vector2(200, 200));
 		test1.colour = Colour.blue;
+		
+		GameObject test2 = new GameObject(game.getScene(), new Vector2(600, 250), new Vector2(300, 200));
+		test2.setImage(new Image("dog.png"));
 		
 		game.getScene().addGameObjects(test0, test1);
 		

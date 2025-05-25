@@ -17,7 +17,7 @@ public class Game implements Runnable {
 	private Thread thread;
 
 	private boolean running = false;
-	private double maxFPS = 75.0f;
+	private double maxFPS = 60.0f;
 	
 	float scale = 1.0f;
 	
@@ -43,10 +43,10 @@ public class Game implements Runnable {
         int refreshRate = dm.getRefreshRate();
         
         if (refreshRate == DisplayMode.REFRESH_RATE_UNKNOWN) {
-            System.out.println("Refresh rate is unknown, using 60 as maximum FPS");
+            System.out.println("Refresh rate is unknown, using " + (int) maxFPS + " as maximum FPS");
         }
         else {
-            //maxFPS = (double) refreshRate;
+            maxFPS = (double) refreshRate;
             System.out.println("Refresh rate: " + refreshRate + " Hz");
         }
         

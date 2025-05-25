@@ -35,6 +35,8 @@ public class Renderer {
 	}
 	
 	public void addToPixelNoChecks(int x, int y, int value, double opacity) {
+		if (value == colourKey) return;
+		
 		int r = (value & 0xff0000) >> 16;
 		int g = (value & 0x00ff00) >> 8;
 		int b = value & 0x0000ff;
@@ -74,6 +76,12 @@ public class Renderer {
 		
 		for (int _x = startX; _x < newW; _x++) {
 			for (int _y = startY; _y < newH; _y++) {
+				if (pixels[_x + _y * imgWidth] < 0) {
+					//System.out.println(pixels[_x + _y * imgWidth] + " below zero");
+				}
+				if (colourKey == pixels[_x + _y * imgWidth]) {
+					//System.out.println(pixels[_x + _y * imgWidth] + " equals colour key");
+				}
 				setPixelNoChecks(x + _x, y + _y, pixels[_x + _y * imgWidth]);
 			}
 		}

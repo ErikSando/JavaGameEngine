@@ -3,6 +3,8 @@ package com.erik.engine;
 import java.util.ArrayList;
 
 public class Scene {
+	public double gravity = 9.8;
+	
 	private ArrayList<ArrayList<GameObject>> layers = new ArrayList<ArrayList<GameObject>>();
 	
 	public ArrayList<GameObject> getGameObjects() {
@@ -30,12 +32,12 @@ public class Scene {
 		
 		//gameObject.setIndex(layers.get(layer).size());
 		layers.get(layer).add(gameObject);
+		gameObject.setScene(this);
 	}
 	
 	public void addGameObjects(GameObject... gameObjects) {
 		for (GameObject gameObject : gameObjects) {
 			addGameObject(gameObject);
-			gameObject.setScene(this);
 		}
 	}
 	

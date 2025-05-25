@@ -2,29 +2,35 @@ package com.erik.engine;
 
 import java.awt.Rectangle;
 
+import com.erik.engine.gfx.Image;
+
 public class GameObject {
 	public Vector2 position;
 	public Vector2 velocity = Vector2.zero();
 	public Vector2 scale;
 	public int colour = 0xffffff;
-	public double opacity = 1.0;
-	public int layer = 0;
+	
+	private double opacity = 1.0;
+	private int layer = 0;
+	
+	private Image image;
+	private boolean hasImage = false;
 	
 	private Scene scene;
 	//private int index;
 	
+	private double mass;
+	
 	public GameObject(Scene scene, float x, float y, int w, int h) {
-		//this.scene = scene;
 		position = new Vector2(x, y);
 		scale = new Vector2(w, h);
-		this.scene.addGameObject(this);
+		scene.addGameObject(this);
 	}
 	
 	public GameObject(Scene scene, Vector2 position, Vector2 scale) {
-		//this.scene = scene;
 		this.position = position;
 		this.scale = scale;
-		this.scene.addGameObject(this);
+		scene.addGameObject(this);
 	}
 	
 	public GameObject(float x, float y, int w, int h) {
@@ -39,6 +45,7 @@ public class GameObject {
 	
 	public void update(double delta) {
 		
+		
 		position.add(velocity.multiplied(delta));
 	}
 	
@@ -46,11 +53,31 @@ public class GameObject {
 		//graphics.setColor(Color.white);
 		//graphics.fillRect((int) position.x, (int) position.y, (int) scale.x, (int) scale.y);
 		
+		if (hasImage) {
+			renderer.renderImage(image, (int) position.x, (int) position.y);
+			return;
+		}
+		
 		renderer.renderRectangle((int) position.x, (int) position.y, (int) scale.x, (int) scale.y, colour, opacity);
 	}
 	
 	public void destroy() {
 		scene.removeGameObject(this);
+	}
+	
+	public Image getImage() {
+		return image;
+	}
+	
+	public void setImage(Image image) {
+		if (image.getWidth() == scale.x && image.getHeight() == scale.y) {
+			this.image = image;
+			hasImage = true;
+			return;
+		}
+		
+		this.image = image.getScaled((int) scale.x, (int) scale.y);
+		hasImage = true;
 	}
 	
 	public int getLayer() {
@@ -60,6 +87,25 @@ public class GameObject {
 	public void setLayer(int layer) {
 		if (layer < 0) return;
 		scene.changeGameObjectLayer(this, layer);
+	}
+	
+	public double getOpacity() {
+		return opacity;
+	}
+	
+	public void setOpacity(double opacity) {
+		// not sure if i should clamp or ignore if opacity < 0 || opacity > 1
+		this.opacity = Math.min(Math.max(opacity, 0.0), 1.0);
+	}
+	
+	public double getMass() {
+		return mass;
+	}
+	
+	public void setMass(double mass) {
+		// not sure if i should clamp or ignore if mass < 0
+		if (mass < 0.0) return;
+		this.mass = mass;
 	}
 
 	public Rectangle getRect() {
