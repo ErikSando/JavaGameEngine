@@ -24,7 +24,7 @@ public class Main {
 		
 		game.getScene().addGameObjects(test0, test1);
 		
-		test0.opacity = 1.0;
+		test0.setOpacity(1.0);
 		test0.setLayer(1);
 		test1.setLayer(0);
 		

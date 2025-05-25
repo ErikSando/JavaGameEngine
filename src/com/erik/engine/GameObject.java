@@ -11,7 +11,7 @@ public class GameObject {
 	public int colour = 0xffffff;
 	
 	private double opacity = 1.0;
-	private int layer = 0;
+	int layer = 0; // package private
 	
 	private Image image;
 	private boolean hasImage = false;

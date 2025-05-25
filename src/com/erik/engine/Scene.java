@@ -3,6 +3,7 @@ package com.erik.engine;
 import java.util.ArrayList;
 
 public class Scene {
+	public static final int MAX_LAYER = 50;
 	public double gravity = 9.8;
 	
 	private ArrayList<ArrayList<GameObject>> layers = new ArrayList<ArrayList<GameObject>>();
@@ -24,7 +25,7 @@ public class Scene {
 	// right now, game object layers cant be changed without breaking removeGameObject
 	
 	public void addGameObject(GameObject gameObject) {
-		int layer = gameObject.layer;
+		int layer = gameObject.getLayer();
 		
 		while (layer >= layers.size()) {
 			layers.add(new ArrayList<GameObject>());
@@ -43,7 +44,7 @@ public class Scene {
 	
 	public void removeGameObject(GameObject gameObject) {
 		//layers.get(gameObject.layer).remove(gameObject.getIndex());
-		layers.get(gameObject.layer).remove(gameObject);
+		layers.get(gameObject.getLayer()).remove(gameObject);
 	}
 	
 	public void removeGameObjects(GameObject... gameObjects) {
@@ -53,6 +54,8 @@ public class Scene {
 	}
 	
 	public void changeGameObjectLayer(GameObject gameObject, int layer) {
+		if (layer < 0 || layer > MAX_LAYER) return;
+		
 		removeGameObject(gameObject);
 		gameObject.layer = layer;
 		addGameObject(gameObject);
