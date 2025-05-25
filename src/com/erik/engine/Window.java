@@ -59,6 +59,7 @@ public class Window {
 		frame = new JFrame();
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(size);
+		frame.setLocationRelativeTo(null);
 		frame.setLayout(new BorderLayout());
 		frame.add(canvas, BorderLayout.CENTER);
 		frame.pack();
@@ -82,11 +83,11 @@ public class Window {
 	}
 	
 	public int getWidth() {
-		return frame.getWidth();
+		return width;
 	}
 	
 	public int getHeight() {
-		return frame.getWidth();
+		return height;
 	}
 	
 	public void setSize(int width, int height) {

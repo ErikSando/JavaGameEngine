@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
+import com.erik.engine.gfx.Image;
+
 public class Game implements Runnable {
 	private Window window;
 	private InputHandler input;
@@ -22,14 +24,14 @@ public class Game implements Runnable {
 	public Game(String title, int width, int height) {
 		window = new Window(title, width, height);
 		input = new InputHandler(this);
-		renderer = new Renderer(this, 0xff00ff);
+		renderer = new Renderer(window, 0xff00ff);
 		scene = new Scene();
 	}
 	
 	public Game(String title, int width, int height, ImageIcon icon) {
 		window = new Window(title, width, height, icon);
 		input = new InputHandler(this);
-		renderer = new Renderer(this, 0xff00ff);
+		renderer = new Renderer(window, 0xff00ff);
 		scene = new Scene();
 	}
 	

@@ -13,14 +13,14 @@ public class Main {
 		Game game = new Game("Game test", 960, 540, icon);
 		
 		GameObject test0 = new GameObject(new Vector2(100, 100), new Vector2(200, 200));
-		test0.colour = Colour.red;
+		test0.colour = Colour.getColour(255, 0, 0);
 		
-		GameObject test1 = new GameObject(new Vector2(250, 200), new Vector2(200, 200));
+		GameObject test1 = new GameObject(new Vector2(350, 200), new Vector2(200, 200));
 		test1.colour = Colour.blue;
 		
 		game.getScene().addGameObjects(test0, test1);
 		
-		test0.opacity = 0.5;
+		test0.opacity = 1.0;
 		test0.setLayer(1);
 		test1.setLayer(0);
 		

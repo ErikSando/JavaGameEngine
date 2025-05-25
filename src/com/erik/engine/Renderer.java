@@ -5,21 +5,16 @@ import java.awt.image.DataBufferInt;
 import com.erik.engine.gfx.Image;
 import com.erik.engine.gfx.ImageTile;
 
-// TODO: support opacity/transparency
-// i think i just need to divide the r, g, and b and then add to the pixel instead of set
-
 public class Renderer {
 	private int pixelW, pixelH;
 	private int[] pixels;
-	private int[] maxLayer;
 	private int colourKey;
 	private int clearColour = Colour.black;
 	
-	public Renderer(Game game, int colourKey) {
-		pixelW = game.getWindow().getWidth();
-		pixelH = game.getWindow().getHeight();
-		pixels = ((DataBufferInt) game.getWindow().getImage().getRaster().getDataBuffer()).getData();
-		maxLayer = new int[pixelW * pixelH];
+	public Renderer(Window window, int colourKey) {
+		pixelW = window.getWidth();
+		pixelH = window.getHeight();
+		pixels = ((DataBufferInt) window.getImage().getRaster().getDataBuffer()).getData();
 		this.colourKey = colourKey;
 	}
 	
@@ -112,6 +107,7 @@ public class Renderer {
 	public void renderRectangle(int x, int y, int w, int h, int colour, double opacity) {
 		if (x < -w || y < -h) return;
 		if (x >= pixelW || y >= pixelH) return;
+		if (opacity == 0.0) return;
 		
 		int startX = 0;
 		int startY = 0;
@@ -121,7 +117,7 @@ public class Renderer {
 		if (x < 0) startX -= x;
 		if (y < 0) startY -= y;
 		if (newW + x > pixelW) newW -= (newW + x - pixelW);
-		if (newH + y > pixelW) newH -= (newH + y - pixelH);
+		if (newH + y > pixelH) newH -= (newH + y - pixelH);
 		
 		for (int _x = startX; _x < newW; _x++) {
 			for (int _y = startY; _y < newH; _y++) {
