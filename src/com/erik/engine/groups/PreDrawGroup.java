@@ -1,4 +1,7 @@
-package com.erik.engine;
+package com.erik.engine.groups;
+
+import com.erik.engine.Game;
+import com.erik.engine.Renderer;
 
 public abstract class PreDrawGroup extends GroupMember {
 	public PreDrawGroup() {}

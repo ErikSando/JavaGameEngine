@@ -3,12 +3,12 @@ package com.erik.game;
 import com.erik.engine.Colour;
 import com.erik.engine.Game;
 import com.erik.engine.GameObject;
-import com.erik.engine.InputAxis;
 import com.erik.engine.InputHandler;
-import com.erik.engine.PreUpdateGroup;
 import com.erik.engine.Vector2;
+import com.erik.engine.enums.InputAxis;
+import com.erik.engine.groups.PostUpdateGroup;
 
-public class Player extends PreUpdateGroup {
+public class Player extends PostUpdateGroup {
 	private InputHandler input;
 	private GameObject gameObject;
 	

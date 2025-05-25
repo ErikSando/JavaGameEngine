@@ -15,9 +15,9 @@ public class Main {
 		World world = new World();
 		world.loadData("res/levels/level1.txt");
 		
-		Player player = new Player(game, new Vector2(400, 50));
+		Player player = new Player(game, new Vector2(80, 0));
 		
-		GameObject object = new GameObject(game.getScene(), new Vector2(600, 250), new Vector2(300, 200));
+		GameObject object = new GameObject(game.getScene(), new Vector2(280, 150), new Vector2(300, 200));
 		object.setImage(new Image("dog.png"));
 		
 		game.start();

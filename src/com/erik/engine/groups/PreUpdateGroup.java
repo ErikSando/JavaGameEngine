@@ -1,4 +1,6 @@
-package com.erik.engine;
+package com.erik.engine.groups;
+
+import com.erik.engine.Game;
 
 public abstract class PreUpdateGroup extends GroupMember {
 	public PreUpdateGroup() {}

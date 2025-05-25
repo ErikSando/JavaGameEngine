@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import javax.swing.ImageIcon;
 
 import com.erik.engine.gfx.Image;
+import com.erik.engine.groups.PostDrawGroup;
+import com.erik.engine.groups.PostUpdateGroup;
+import com.erik.engine.groups.PreDrawGroup;
+import com.erik.engine.groups.PreUpdateGroup;
 
 public class Game implements Runnable {
 	private Window window;

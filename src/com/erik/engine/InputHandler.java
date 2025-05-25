@@ -8,6 +8,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import com.erik.engine.enums.InputAxis;
+import com.erik.engine.enums.KeyCode;
+import com.erik.engine.enums.MouseButton;
 import com.erik.engine.events.KeyboardEventSource;
 import com.erik.engine.events.MouseEventSource;
 

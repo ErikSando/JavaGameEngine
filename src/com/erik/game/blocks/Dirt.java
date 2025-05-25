@@ -8,7 +8,7 @@ public class Dirt extends GameObject {
 	public Dirt(Scene scene, int x, int y, int w) {
 		super(scene, x, y, w, w);
 		
-		setImage(new Image("blocks/dirt.png"));
+		//setImage(new Image("blocks/dirt.png"));
 		update = false;
 	}
 }

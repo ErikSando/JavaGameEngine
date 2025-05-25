@@ -1,4 +1,4 @@
-package com.erik.engine;
+package com.erik.engine.enums;
 
 import java.awt.event.KeyEvent;
 

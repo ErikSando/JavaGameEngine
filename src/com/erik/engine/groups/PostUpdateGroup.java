@@ -1,4 +1,6 @@
-package com.erik.engine;
+package com.erik.engine.groups;
+
+import com.erik.engine.Game;
 
 public abstract class PostUpdateGroup extends GroupMember {
 	public PostUpdateGroup() {}
