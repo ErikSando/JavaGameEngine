@@ -90,6 +90,10 @@ public class Window {
 		return height;
 	}
 	
+	public Vector2 getSize() {
+		return new Vector2(width, height);
+	}
+	
 	public void setSize(int width, int height) {
 		frame.setSize(new Dimension(width, height));
 	}

@@ -8,10 +8,13 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import com.erik.engine.events.KeyboardEventSource;
+import com.erik.engine.events.MouseEventSource;
+
 public class InputHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
 	private Game game;
 	
-	private final int numKeys = 256;
+	private final int numKeys = KeyCode.Last.getKeyCode();
 	private boolean[] keys = new boolean[numKeys];
 	private boolean[] keysLast = new boolean[numKeys];
 	
@@ -21,6 +24,12 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 	
 	private int mouseX, mouseY;
 	private int scroll;
+	
+	public KeyboardEventSource keyDown = new KeyboardEventSource();
+	public KeyboardEventSource keyUp = new KeyboardEventSource();
+	
+	public MouseEventSource mouseDown = new MouseEventSource();
+	public MouseEventSource mouseUp = new MouseEventSource();
 	
 	public InputHandler(Game game) {
 		this.game = game;
@@ -46,28 +55,52 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 		scroll = 0;
 	}
 	
-	public boolean isKey(int keyCode) {
+	public boolean getKey(int keyCode) {
 		return keys[keyCode];
 	}
 	
-	public boolean isKeyDown(int keyCode) {
+	public boolean getKey(KeyCode keyCode) {
+		return keys[keyCode.getKeyCode()];
+	}
+	
+	public boolean getKeyDown(int keyCode) {
 		return keys[keyCode] && !keysLast[keyCode];
 	}
 	
-	public boolean isKeyUp(int keyCode) {
+	public boolean getKeyDown(KeyCode keyCode) {
+		return keys[keyCode.getKeyCode()] && !keysLast[keyCode.getKeyCode()];
+	}
+	
+	public boolean getKeyUp(int keyCode) {
 		return !keys[keyCode] && keysLast[keyCode];
 	}
 	
-	public boolean isButton(int button) {
+	public boolean getKeyUp(KeyCode keyCode) {
+		return !keys[keyCode.getKeyCode()] && keysLast[keyCode.getKeyCode()];
+	}
+	
+	public boolean getButton(int button) {
 		return buttons[button];
 	}
 	
-	public boolean isButtonDown(int button) {
+	public boolean getButton(MouseButton button) {
+		return buttons[button.getButton()];
+	}
+	
+	public boolean getButtonDown(int button) {
 		return buttons[button] && !buttonsLast[button];
 	}
 	
-	public boolean isButtonUp(int button) {
+	public boolean getButtonDown(MouseButton button) {
+		return buttons[button.getButton()] && !buttonsLast[button.getButton()];
+	}
+	
+	public boolean getButtonUp(int button) {
 		return !buttons[button] && buttonsLast[button];
+	}
+	
+	public boolean getButtonUp(MouseButton button) {
+		return !buttons[button.getButton()] && buttonsLast[button.getButton()];
 	}
 
 	@Override
@@ -121,14 +154,18 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() >= numKeys) return;
-		keys[e.getKeyCode()] = true;
+		int keyCode = e.getKeyCode();
+		if (keyCode >= numKeys) return;
+		keys[keyCode] = true;
+		keyDown.invoke(keyCode, e.getKeyChar(), e.getKeyLocation(), getKey(KeyCode.Control), getKey(KeyCode.Shift));
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() >= numKeys) return;
-		keys[e.getKeyCode()] = false;
+		int keyCode = e.getKeyCode();
+		if (keyCode >= numKeys) return;
+		keys[keyCode] = false;
+		keyUp.invoke(keyCode, e.getKeyChar(), e.getKeyLocation(), getKey(KeyCode.Control), getKey(KeyCode.Shift));
 	}
 
 	public int getMouseX() {
@@ -141,5 +178,23 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 	
 	public int getScroll() {
 		return scroll;
+	}
+	
+	public int getAxisRaw(InputAxis axis) {
+		int value = 0;
+		
+		switch (axis) {
+			case Horizontal:
+				if (getKey(KeyCode.A) || getKey(KeyCode.Right)) value--;
+				if (getKey(KeyCode.D) || getKey(KeyCode.Left)) value++;
+				break;
+			
+			case Vertical:
+				if (getKey(KeyCode.W) || getKey(KeyCode.Up)) value--;
+				if (getKey(KeyCode.S) || getKey(KeyCode.Down)) value++;
+				break;
+		}
+		
+		return value;
 	}
 }

@@ -11,11 +11,21 @@ public class Renderer {
 	private int colourKey;
 	private int clearColour = Colour.black;
 	
+	private Camera camera = new Camera();
+	
 	public Renderer(Window window, int colourKey) {
 		pixelW = window.getWidth();
 		pixelH = window.getHeight();
 		pixels = ((DataBufferInt) window.getImage().getRaster().getDataBuffer()).getData();
 		this.colourKey = colourKey;
+	}
+	
+	public Camera getCamera() {
+		return camera;
+	}
+	
+	public void setCamera(Camera camera) {
+		this.camera = camera;
 	}
 	
 	public void clear() {
@@ -55,51 +65,49 @@ public class Renderer {
 		addToPixelNoChecks(x, y, value, opacity);
 	}
 	
-	public void renderImage(Image image, int x, int y) {
-		if (x < -image.getWidth()) return;
-		if (y < -image.getHeight()) return;
-		if (x >= pixelW) return;
-		if (y >= pixelH) return;
+	public void drawImage(Image image, int x, int y) {
+		int offsetX = x - (int) camera.position.x;
+		int offsetY = y - (int) camera.position.y;
+		
+		if (offsetX < -image.getWidth() || offsetY < -image.getHeight()) return;
+		if (offsetX >= pixelW || offsetY >= pixelH) return;
 		
 		int startX = 0;
 		int startY = 0;
 		int newW = image.getWidth();
 		int newH = image.getHeight();
 		
-		if (x < 0) startX -= x;
-		if (y < 0) startY -= y;
-		if (newW + x > pixelW) newW -= (newW + x - pixelW);
-		if (newH + y > pixelH) newH -= (newH + y - pixelH);
+		if (offsetX < 0) startX -= offsetX;
+		if (offsetY < 0) startY -= offsetY;
+		if (newW + offsetX > pixelW) newW -= (newW + offsetX - pixelW);
+		if (newH + offsetY > pixelH) newH -= (newH + offsetY - pixelH);
 
 		int imgWidth = image.getWidth();
 		int[] pixels = image.getPixels();
 		
 		for (int _x = startX; _x < newW; _x++) {
 			for (int _y = startY; _y < newH; _y++) {
-				if (pixels[_x + _y * imgWidth] < 0) {
-					//System.out.println(pixels[_x + _y * imgWidth] + " below zero");
-				}
-				if (colourKey == pixels[_x + _y * imgWidth]) {
-					//System.out.println(pixels[_x + _y * imgWidth] + " equals colour key");
-				}
-				setPixelNoChecks(x + _x, y + _y, pixels[_x + _y * imgWidth]);
+				setPixelNoChecks(offsetX + _x, offsetY + _y, pixels[_x + _y * imgWidth]);
 			}
 		}
 	}
 	
-	public void renderImageTile(ImageTile image, int x, int y, int tileX, int tileY) {
-		if (x < -image.getWidth() || y < -image.getHeight()) return;
-		if (x >= pixelW || y >= pixelH) return;
+	public void drawImageTile(ImageTile image, int x, int y, int tileX, int tileY) {
+		int offsetX = x - (int) camera.position.x;
+		int offsetY = y - (int) camera.position.y;
+		
+		if (offsetX < -image.getWidth() || offsetY < -image.getHeight()) return;
+		if (offsetX >= pixelW || offsetY >= pixelH) return;
 
 		int startX = 0;
 		int startY = 0;
 		int newW = image.getWidth();
 		int newH = image.getHeight();
 		
-		if (x < 0) startX -= x;
-		if (y < 0) startY -= y;
-		if (newW + x > pixelW) newW -= (newW + x - pixelW);
-		if (newH + y > pixelH) newH -= (newH + y - pixelH);
+		if (offsetX < 0) startX -= offsetX;
+		if (offsetY < 0) startY -= offsetY;
+		if (newW + offsetX > pixelW) newW -= (newW + offsetX - pixelW);
+		if (newH + offsetY > pixelH) newH -= (newH + offsetY - pixelH);
 
 		int imgWidth = image.getWidth();
 		int imgHeight = image.getHeight();
@@ -107,14 +115,17 @@ public class Renderer {
 
 		for (int _x = startX; _x < newW; _x++) {
 			for (int _y = startY; _y < newH; _y++) {
-				setPixelNoChecks(_x + x, _y + y, pixels[_x + tileX * imgWidth + _y + tileY * imgHeight * imgWidth]);
+				setPixelNoChecks(_x + offsetX, _y + offsetY, pixels[_x + tileX * imgWidth + _y + tileY * imgHeight * imgWidth]);
 			}
 		}
 	}
 	
-	public void renderRectangle(int x, int y, int w, int h, int colour, double opacity) {
-		if (x < -w || y < -h) return;
-		if (x >= pixelW || y >= pixelH) return;
+	public void drawRectangle(int x, int y, int w, int h, int colour, double opacity) {
+		int offsetX = x - (int) camera.position.x;
+		int offsetY = y - (int) camera.position.y;
+		
+		if (offsetX < -w || offsetY < -h) return;
+		if (offsetX >= pixelW || offsetY >= pixelH) return;
 		if (opacity == 0.0) return;
 		
 		int startX = 0;
@@ -122,24 +133,24 @@ public class Renderer {
 		int newW = w;
 		int newH = h;
 		
-		if (x < 0) startX -= x;
-		if (y < 0) startY -= y;
-		if (newW + x > pixelW) newW -= (newW + x - pixelW);
-		if (newH + y > pixelH) newH -= (newH + y - pixelH);
+		if (offsetX < 0) startX -= offsetX;
+		if (offsetY < 0) startY -= offsetY;
+		if (newW + offsetX > pixelW) newW -= (newW + offsetX - pixelW);
+		if (newH + offsetY > pixelH) newH -= (newH + offsetY - pixelH);
 		
 		for (int _x = startX; _x < newW; _x++) {
 			for (int _y = startY; _y < newH; _y++) {
 				if (opacity < 1.0) {
-					addToPixelNoChecks(x + _x, y + _y, colour, opacity);
+					addToPixelNoChecks(offsetX + _x, offsetY + _y, colour, opacity);
 				}
 				else {
-					setPixelNoChecks(x + _x, y + _y, colour);
+					setPixelNoChecks(offsetX + _x, offsetY + _y, colour);
 				}
 			}
 		}
 	}
 	
-	public void renderGameObject(GameObject gameObject) {
+	public void drawGameObject(GameObject gameObject) {
 		// if image: render it's image within it's bounds and with it's opacity
 		// if no image: render it's rectangle with it's colour
 	}

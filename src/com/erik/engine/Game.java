@@ -14,6 +14,7 @@ public class Game implements Runnable {
 	private InputHandler input;
 	private Renderer renderer;
 	private Scene scene;
+	private Camera camera;
 	private Thread thread;
 
 	private boolean running = false;
@@ -21,17 +22,26 @@ public class Game implements Runnable {
 	
 	float scale = 1.0f;
 	
+	private ArrayList<PreUpdateGroup> preUpdateGroup = new ArrayList<>();
+	private ArrayList<PostUpdateGroup> postUpdateGroup = new ArrayList<>();
+	private ArrayList<PreDrawGroup> preDrawGroup = new ArrayList<>();
+	private ArrayList<PostDrawGroup> postDrawGroup = new ArrayList<>();
+	
 	public Game(String title, int width, int height) {
 		window = new Window(title, width, height);
 		input = new InputHandler(this);
+		camera = new Camera();
 		renderer = new Renderer(window, 0xff00ff);
+		renderer.setCamera(camera);
 		scene = new Scene();
 	}
 	
 	public Game(String title, int width, int height, ImageIcon icon) {
 		window = new Window(title, width, height, icon);
 		input = new InputHandler(this);
+		camera = new Camera();
 		renderer = new Renderer(window, 0xff00ff);
+		renderer.setCamera(camera);
 		scene = new Scene();
 	}
 	
@@ -48,6 +58,14 @@ public class Game implements Runnable {
         else {
             maxFPS = (double) refreshRate;
             System.out.println("Refresh rate: " + refreshRate + " Hz");
+        }
+        
+        for (PreUpdateGroup member : preUpdateGroup) {
+        	member.start();
+        }
+
+        for (PostUpdateGroup member : postUpdateGroup) {
+        	member.start();
         }
         
 		thread = new Thread(this);
@@ -97,7 +115,7 @@ public class Game implements Runnable {
 			while (unprocessedTime >= updateRate && updateCount < maxUpdates) {
 				unprocessedTime -= updateRate;
 
-				input.update();
+//				input.update();
 				update(updateRate);
 
 				updateCount++;
@@ -117,7 +135,7 @@ public class Game implements Runnable {
 				continue;
 			}
 			
-			render(unprocessedTime / updateRate);
+			draw(unprocessedTime / updateRate);
 			
 			frames++;
 		}
@@ -130,24 +148,42 @@ public class Game implements Runnable {
 	}
 	
 	private void update(double delta) {
+		input.update();
+		
+        for (PreUpdateGroup member : preUpdateGroup) {
+        	member.update(delta);
+        }
+        
 		ArrayList<GameObject> gameObjects = scene.getGameObjects();
 		
 		for (int i = 0; i < gameObjects.size(); i++) {
-			gameObjects.get(i).update(delta);
+			gameObjects.get(i).update(delta, gameObjects);
 		}
+
+        for (PostUpdateGroup member : postUpdateGroup) {
+        	member.update(delta);
+        }
 	}
 	
-	private void render(double interpolation) {
+	private void draw(double interpolation) {
 		renderer.clear();
 		
-		//renderer.render();
+        for (PreDrawGroup member : preDrawGroup) {
+        	member.draw(renderer);
+        }
+		
+		//renderer.draw();
 		
 		ArrayList<GameObject> gameObjects = scene.getGameObjects();
 		
 		for (int i = 0; i < gameObjects.size(); i++) {
-			gameObjects.get(i).render(renderer);
-			//renderer.renderGameObject(gameObjects.get(i));
+			gameObjects.get(i).draw(renderer);
+			//renderer.drawGameObject(gameObjects.get(i));
 		}
+		
+        for (PostDrawGroup member : postDrawGroup) {
+        	member.draw(renderer);
+        }
 		
 		window.update();
 	}
@@ -176,11 +212,51 @@ public class Game implements Runnable {
 		this.input = input;
 	}
 	
+	public Camera getCamera() {
+		return camera;
+	}
+	
+	public void setCamera(Camera camera) {
+		this.camera = camera;
+	}
+	
 	public float getScale() {
 		return scale;
 	}
 	
 	public void setScale(float scale) {
 		this.scale = scale;
+	}
+	
+	public void addToPreUpdateGroup(PreUpdateGroup member) {
+		preUpdateGroup.add(member);
+	}
+	
+	public void removeFromPreUpdateGroup(PreUpdateGroup member) {
+		preUpdateGroup.remove(member);
+	}
+	
+	public void addToPostUpdateGroup(PostUpdateGroup member) {
+		postUpdateGroup.add(member);
+	}
+	
+	public void removeFromPostUpdateGroup(PostUpdateGroup member) {
+		postUpdateGroup.remove(member);
+	}
+	
+	public void addToPreDrawGroup(PreDrawGroup member) {
+		preDrawGroup.add(member);
+	}
+	
+	public void removeFromPreDrawGroup(PreDrawGroup member) {
+		preDrawGroup.remove(member);
+	}
+	
+	public void addToPostDrawGroup(PostDrawGroup member) {
+		postDrawGroup.add(member);
+	}
+	
+	public void removeFromPostDrawGroup(PostDrawGroup member) {
+		postDrawGroup.remove(member);
 	}
 }

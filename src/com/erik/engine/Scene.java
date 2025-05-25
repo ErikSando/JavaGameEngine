@@ -4,12 +4,25 @@ import java.util.ArrayList;
 
 public class Scene {
 	public static final int MAX_LAYER = 50;
-	public double gravity = 9.8;
+	public double gravity = 300;
 	
 	private ArrayList<ArrayList<GameObject>> layers = new ArrayList<ArrayList<GameObject>>();
+//	private ArrayList<ArrayList<StaticGameObject>> staticLayers = new ArrayList<ArrayList<StaticGameObject>>();
+	
+//	private Camera camera = new Camera();
+	
+	public Scene() {}
+	
+//	public Camera getCamera() {
+//		return camera;
+//	}
+//	
+//	public void setCamera(Camera camera) {
+//		this.camera = camera;
+//	}
 	
 	public ArrayList<GameObject> getGameObjects() {
-		ArrayList<GameObject> gameObjects = new ArrayList<GameObject>();
+		ArrayList<GameObject> gameObjects = new ArrayList<>();
 		
 		for (int i = 0; i < layers.size(); i++) {
 			ArrayList<GameObject> layer = layers.get(i);
@@ -22,7 +35,22 @@ public class Scene {
 		return gameObjects;
 	}
 	
-	// right now, game object layers cant be changed without breaking removeGameObject
+//	public ArrayList<StaticGameObject> getStaticGameObjects() {
+//		ArrayList<StaticGameObject> staticGameObjects = new ArrayList<>();
+//		
+//		for (int i = 0; i < layers.size(); i++) {
+//			ArrayList<StaticGameObject> layer = staticLayers.get(i);
+//			
+//			for (int j = 0; j < layer.size(); j++) {
+//				staticGameObjects.add(layer.get(j));
+//			}
+//		}
+//		
+//		return staticGameObjects;
+//	}
+	
+	// there might be a better way to handle both updating and static game ojects (using inheritance for example),
+	// but I want them to be in seperate lists so I'm using seperate classes for now
 	
 	public void addGameObject(GameObject gameObject) {
 		int layer = gameObject.getLayer();
@@ -36,6 +64,18 @@ public class Scene {
 		gameObject.setScene(this);
 	}
 	
+//	public void addStaticGameObject(StaticGameObject gameObject) {
+//		int layer = gameObject.getLayer();
+//		
+//		while (layer >= layers.size()) {
+//			staticLayers.add(new ArrayList<StaticGameObject>());
+//		}
+//		
+//		//gameObject.setIndex(layers.get(layer).size());
+//		staticLayers.get(layer).add(gameObject);
+//		gameObject.setScene(this);
+//	}
+	
 	public void addGameObjects(GameObject... gameObjects) {
 		for (GameObject gameObject : gameObjects) {
 			addGameObject(gameObject);
@@ -43,7 +83,7 @@ public class Scene {
 	}
 	
 	public void removeGameObject(GameObject gameObject) {
-		//layers.get(gameObject.layer).remove(gameObject.getIndex());
+//		layers.get(gameObject.layer).remove(gameObject.getIndex());
 		layers.get(gameObject.getLayer()).remove(gameObject);
 	}
 	
