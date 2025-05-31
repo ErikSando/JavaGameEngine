@@ -6,12 +6,14 @@ import com.erik.engine.events.CollisionEventSource;
 import com.erik.engine.gfx.Image;
 import com.erik.engine.shapes.Rectangle;
 import com.erik.engine.utils.Utils;
+import com.erik.engine.vector2.Vector2d;
+import com.erik.engine.vector2.Vector2i;
 
 public class GameObject {
-	public Vector2 position;
-	public Vector2 velocity = Vector2.zero();
-	public Vector2 acceleration = Vector2.zero();
-	public Vector2 scale;
+	public Vector2i position;
+	public Vector2d velocity = Vector2d.zero();
+	public Vector2d acceleration = Vector2d.zero();
+	public Vector2i scale;
 	public int colour = 0xffffff;
 	
 	private double opacity = 1.0;
@@ -27,7 +29,7 @@ public class GameObject {
 	protected double mass;
 	
 	public boolean update = true;
-	public boolean anchored = false;
+	public boolean useGravity = true;
 	public boolean canCollide = true;
 	public boolean canTouch = true;
 	
@@ -39,27 +41,27 @@ public class GameObject {
 	public CollisionEventSource touchEnter = new CollisionEventSource();
 	public CollisionEventSource touchExit = new CollisionEventSource();
 	
-	public GameObject(Scene scene, float x, float y, int w, int h) {
-		position = new Vector2(x, y);
-		scale = new Vector2(w, h);
+	public GameObject(Scene scene, int x, int y, int w, int h) {
+		position = new Vector2i(x, y);
+		scale = new Vector2i(w, h);
 		scene.addGameObject(this);
 		setMass(1.0);
 	}
 	
-	public GameObject(Scene scene, Vector2 position, Vector2 scale) {
+	public GameObject(Scene scene, Vector2i position, Vector2i scale) {
 		this.position = position;
 		this.scale = scale;
 		scene.addGameObject(this);
 		setMass(1.0);
 	}
 	
-	public GameObject(float x, float y, int w, int h) {
-		position = new Vector2(x, y);
-		scale = new Vector2(w, h);
+	public GameObject(int x, int y, int w, int h) {
+		position = new Vector2i(x, y);
+		scale = new Vector2i(w, h);
 		setMass(1.0);
 	}
 	
-	public GameObject(Vector2 position, Vector2 scale) {
+	public GameObject(Vector2i position, Vector2i scale) {
 		this.position = position;
 		this.scale = scale;
 		setMass(1.0);
@@ -68,74 +70,71 @@ public class GameObject {
 	public void update(double delta, ArrayList<GameObject> gameObjects) {
 		if (!update) return;
 		
-		if (!anchored) {
-			acceleration.y = scene.gravity;
+//		if (useGravity) acceleration.y = scene.gravity;
+//	
+//		velocity.add(acceleration.multiplied(delta));
+//		
+//		if (velocity.y > terminalVelocity) {
+//			velocity.y = terminalVelocity; // change this to use drag, like a real life object falling faster than its terminal velocity
+//		}
 		
-			velocity.add(acceleration.multiplied(delta));
-			
-			if (velocity.y > terminalVelocity) {
-				velocity.y = terminalVelocity;
-			}
-		}
-		
-		Rectangle hitbox = getRectangle();
-		Rectangle nextFrameX = new Rectangle(position.plus(new Vector2(velocity.x * delta, 0.0)), scale);
-		Rectangle nextFrameY = new Rectangle(position.plus(new Vector2(0.0, velocity.y * delta)), scale);
-		
-		for (GameObject gameObject : gameObjects) {
-			if (gameObject == this) continue;
-			
-			boolean willCollide = canCollide && gameObject.canCollide;
-			
-			boolean colliding = false;
-			boolean touching = false;
-			
-			Rectangle otherRect = gameObject.getRectangle();
-			
-			if (Utils.RectangleIntersection(nextFrameX, otherRect)) {
-				if (canTouch) touching = true;
-				
-				if (willCollide) {
-					colliding = true;
-					
-					if (velocity.x > 0) {
-						velocity.x = (otherRect.left() - hitbox.right()) / delta;
-					}
-					else if (velocity.x < 0) {
-						velocity.x = (otherRect.right() - hitbox.left()) / delta;
-					}
-				}
-			}
-			
-			if (Utils.RectangleIntersection(nextFrameY, otherRect)) {
-				if (canTouch) touching = true;
-				
-				if (willCollide) {
-					colliding = true;
-					
-					if (velocity.y >= 0) {
-						velocity.y = (otherRect.top() - hitbox.bottom()) / delta;
-					}
-					else if (velocity.y < 0) {
-						velocity.y = (otherRect.bottom() - hitbox.top()) / delta;
-					}
-				}
-			}
-		}
+//		Rectangle hitbox = getRectangle();
+//		Rectangle nextFrameX = new Rectangle(position.plus(new Vector2d(velocity.x * delta, 0.0)), scale);
+//		Rectangle nextFrameY = new Rectangle(position.plus(new Vector2d(0.0, velocity.y * delta)), scale);
+//		
+//		for (GameObject gameObject : gameObjects) {
+//			if (gameObject == this) continue;
+//			
+//			boolean willCollide = canCollide && gameObject.canCollide;
+//			
+//			boolean colliding = false;
+//			boolean touching = false;
+//			
+//			Rectangle otherRect = gameObject.getRectangle();
+//			
+//			if (Utils.RectangleIntersection(nextFrameX, otherRect)) {
+//				if (canTouch) touching = true;
+//				
+//				if (willCollide) {
+//					colliding = true;
+//					
+//					if (velocity.x > 0) {
+//						velocity.x = (otherRect.left() - hitbox.right()) / delta;
+//					}
+//					else if (velocity.x < 0) {
+//						velocity.x = (otherRect.right() - hitbox.left()) / delta;
+//					}
+//				}
+//			}
+//			
+//			if (Utils.RectangleIntersection(nextFrameY, otherRect)) {
+//				if (canTouch) touching = true;
+//				
+//				if (willCollide) {
+//					colliding = true;
+//					
+//					if (velocity.y >= 0) {
+//						velocity.y = (otherRect.top() - hitbox.bottom()) / delta;
+//					}
+//					else if (velocity.y < 0) {
+//						velocity.y = (otherRect.bottom() - hitbox.top()) / delta;
+//					}
+//				}
+//			}
+//		}
 		
 		position.add(velocity.multiplied(delta));
 	}
 	
 	public void draw(Renderer renderer) {
-		//graphics.setColor(Color.white);
-		//graphics.fillRect((int) position.x, (int) position.y, (int) scale.x, (int) scale.y);
+		System.out.println("Pos: " + position);
 		
 		if (hasImage) {
-			renderer.drawImage(image, (int) position.x, (int) position.y);
+			renderer.drawImage(image, position.x, position.y);
 			return;
 		}
 		
-		renderer.drawRectangle((int) position.x, (int) position.y, (int) scale.x, (int) scale.y, colour, opacity);
+		renderer.drawRectangle(position.x, position.y, scale.x, scale.y, colour, opacity);
 	}
 	
 	public void destroy() {
@@ -163,6 +162,7 @@ public class GameObject {
 	
 	public void setLayer(int layer) {
 		if (layer < 0) return;
+		if (layer > 20) return; // make this better in the future
 		scene.changeGameObjectLayer(this, layer);
 	}
 	
@@ -185,6 +185,8 @@ public class GameObject {
 		this.mass = mass;
 		
 		terminalVelocity = 2000 * Math.sqrt(scene.gravity * mass / scale.x);
+		
+		System.out.println(terminalVelocity);
 	}
 
 	public Rectangle getRectangle() {

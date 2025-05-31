@@ -3,18 +3,18 @@ package com.erik.engine.groups;
 import com.erik.engine.Game;
 import com.erik.engine.Renderer;
 
-public abstract class PostDrawGroup extends GroupMember {
-	public PostDrawGroup() {}
+public abstract class PostDrawMember extends GroupMember {
+	public PostDrawMember() {}
 	
-	public PostDrawGroup(boolean active) {
+	public PostDrawMember(boolean active) {
 		super(active);
 	}
 	
-	public PostDrawGroup(Game game) {
+	public PostDrawMember(Game game) {
 		super(game);
 	}
 	
-	public PostDrawGroup(Game game, boolean active) {
+	public PostDrawMember(Game game, boolean active) {
 		super(game, active);
 	}
 

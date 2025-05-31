@@ -87,8 +87,8 @@ public enum KeyCode {
 		return currentKeyCode++;
 	}
 	
-	private static void setNext(int current) {
-		currentKeyCode = current + 1;
+	private static void setNext(int next) {
+		currentKeyCode = next;
 	}
 	
 	KeyCode() {
@@ -97,7 +97,7 @@ public enum KeyCode {
 	
 	KeyCode(int keyCode) {
 		this.keyCode = keyCode;
-		setNext(keyCode);
+		setNext(keyCode + 1);
 	}
 	
 	public int getKeyCode() {

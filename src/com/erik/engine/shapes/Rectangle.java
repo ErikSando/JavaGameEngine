@@ -1,6 +1,6 @@
 package com.erik.engine.shapes;
 
-import com.erik.engine.Vector2;
+import com.erik.engine.vector2.Vector2i;
 
 public class Rectangle {
 	public int x, y, w, h;
@@ -12,19 +12,19 @@ public class Rectangle {
 		this.h = h;
 	}
 	
-	public Rectangle(Vector2 position, Vector2 scale) {
+	public Rectangle(Vector2i position, Vector2i scale) {
 		x = (int) position.x;
 		y = (int) position.y;
 		w = (int) scale.x;
 		h = (int) scale.y;
 	}
 	
-	public Vector2 getPosition() {
-		return new Vector2(x, y);
+	public Vector2i getPosition() {
+		return new Vector2i(x, y);
 	}
 	
-	public Vector2 getScale() {
-		return new Vector2(w, h);
+	public Vector2i getScale() {
+		return new Vector2i(w, h);
 	}
 	
 	public int left() {

@@ -2,31 +2,31 @@ package com.erik.engine.groups;
 
 import com.erik.engine.Game;
 
-public abstract class PostUpdateGroup extends GroupMember {
-	public PostUpdateGroup() {}
+public abstract class PreUpdateMember extends GroupMember {
+	public PreUpdateMember() {}
 	
-	public PostUpdateGroup(boolean active) {
+	public PreUpdateMember(boolean active) {
 		super(active);
 	}
 	
-	public PostUpdateGroup(Game game) {
+	public PreUpdateMember(Game game) {
 		super(game);
 	}
 	
-	public PostUpdateGroup(Game game, boolean active) {
+	public PreUpdateMember(Game game, boolean active) {
 		super(game, active);
 	}
-
+	
 	@Override
 	public void addToGame() {
-		game.addToPostUpdateGroup(this);
+		game.addToPreUpdateGroup(this);
 	}
 
 	@Override
 	public void removeFromGame() {
-		game.removeFromPostUpdateGroup(this);
+		game.removeFromPreUpdateGroup(this);
 	}
-
+	
 	public abstract void start();
 	public abstract void update(double delta);
 }

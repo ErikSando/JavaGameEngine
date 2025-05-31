@@ -3,18 +3,18 @@ package com.erik.engine.groups;
 import com.erik.engine.Game;
 import com.erik.engine.Renderer;
 
-public abstract class PreDrawGroup extends GroupMember {
-	public PreDrawGroup() {}
+public abstract class PreDrawMember extends GroupMember {
+	public PreDrawMember() {}
 	
-	public PreDrawGroup(boolean active) {
+	public PreDrawMember(boolean active) {
 		super(active);
 	}
 	
-	public PreDrawGroup(Game game) {
+	public PreDrawMember(Game game) {
 		super(game);
 	}
 	
-	public PreDrawGroup(Game game, boolean active) {
+	public PreDrawMember(Game game, boolean active) {
 		super(game, active);
 	}
 

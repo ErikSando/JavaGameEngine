@@ -10,6 +10,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
+import com.erik.engine.vector2.Vector2i;
+
 public class Window {
 	private JFrame frame;
 	private Canvas canvas;
@@ -67,6 +69,9 @@ public class Window {
 		frame.setIconImage(icon.getImage());
 		frame.setResizable(resizable);
 		frame.setVisible(true);
+
+		canvas.requestFocus();
+		canvas.requestFocusInWindow();
 		
 		canvas.createBufferStrategy(3);
 		bufferStrategy = canvas.getBufferStrategy();
@@ -90,8 +95,8 @@ public class Window {
 		return height;
 	}
 	
-	public Vector2 getSize() {
-		return new Vector2(width, height);
+	public Vector2i getSize() {
+		return new Vector2i(width, height);
 	}
 	
 	public void setSize(int width, int height) {

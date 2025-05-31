@@ -66,8 +66,8 @@ public class Renderer {
 	}
 	
 	public void drawImage(Image image, int x, int y) {
-		int offsetX = x - (int) camera.position.x;
-		int offsetY = y - (int) camera.position.y;
+		int offsetX = x - camera.position.x;
+		int offsetY = y - camera.position.y;
 		
 		if (offsetX < -image.getWidth() || offsetY < -image.getHeight()) return;
 		if (offsetX >= pixelW || offsetY >= pixelH) return;
@@ -93,8 +93,8 @@ public class Renderer {
 	}
 	
 	public void drawImageTile(ImageTile image, int x, int y, int tileX, int tileY) {
-		int offsetX = x - (int) camera.position.x;
-		int offsetY = y - (int) camera.position.y;
+		int offsetX = x - camera.position.x;
+		int offsetY = y - camera.position.y;
 		
 		if (offsetX < -image.getWidth() || offsetY < -image.getHeight()) return;
 		if (offsetX >= pixelW || offsetY >= pixelH) return;
@@ -121,8 +121,8 @@ public class Renderer {
 	}
 	
 	public void drawRectangle(int x, int y, int w, int h, int colour, double opacity) {
-		int offsetX = x - (int) camera.position.x;
-		int offsetY = y - (int) camera.position.y;
+		int offsetX = x - camera.position.x;
+		int offsetY = y - camera.position.y;
 		
 		if (offsetX < -w || offsetY < -h) return;
 		if (offsetX >= pixelW || offsetY >= pixelH) return;

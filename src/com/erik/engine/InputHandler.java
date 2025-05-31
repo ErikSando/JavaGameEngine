@@ -21,7 +21,7 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 	private boolean[] keys = new boolean[numKeys];
 	private boolean[] keysLast = new boolean[numKeys];
 	
-	private final int numButtons = 5;
+	private final int numButtons = MouseButton.Last.getButton();
 	private boolean[] buttons = new boolean[numButtons];
 	private boolean[] buttonsLast = new boolean[numButtons];
 	
@@ -40,10 +40,10 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 		mouseY = 0;
 		scroll = 0;
 		
-		game.getWindow().getFrame().addKeyListener(this);
-		game.getWindow().getFrame().addMouseListener(this);
-		game.getWindow().getFrame().addMouseMotionListener(this);
-		game.getWindow().getFrame().addMouseWheelListener(this);
+		game.getWindow().getCanvas().addKeyListener(this);
+		game.getWindow().getCanvas().addMouseListener(this);
+		game.getWindow().getCanvas().addMouseMotionListener(this);
+		game.getWindow().getCanvas().addMouseWheelListener(this);
 	}
 	
 	public void update() {
@@ -71,7 +71,10 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 	}
 	
 	public boolean getKeyDown(KeyCode keyCode) {
-		return keys[keyCode.getKeyCode()] && !keysLast[keyCode.getKeyCode()];
+//		System.out.println("Key " + keyCode.getKeyCode() + " down: " + keys[keyCode.getKeyCode()]);
+//		System.out.println("Key " + keyCode.getKeyCode() + " last: " + keysLast[keyCode.getKeyCode()]);
+		int kc = keyCode.getKeyCode();
+		return keys[kc] && !keysLast[kc];
 	}
 	
 	public boolean getKeyUp(int keyCode) {
@@ -130,14 +133,18 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (e.getButton() >= numButtons) return;
-		buttons[e.getButton()] = true;
+		int button = e.getButton();
+		if (button >= numButtons) return;
+		buttons[button] = true;
+		mouseDown.invoke(button, getKey(KeyCode.Control), getKey(KeyCode.Shift));
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		if (e.getButton() >= numButtons) return;
-		buttons[e.getButton()] = false;
+		int button = e.getButton();
+		if (button >= numButtons) return;
+		buttons[button] = false;
+		mouseUp.invoke(button, getKey(KeyCode.Control), getKey(KeyCode.Shift));
 	}
 
 	@Override

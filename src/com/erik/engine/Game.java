@@ -7,11 +7,10 @@ import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 
-import com.erik.engine.gfx.Image;
-import com.erik.engine.groups.PostDrawGroup;
-import com.erik.engine.groups.PostUpdateGroup;
-import com.erik.engine.groups.PreDrawGroup;
-import com.erik.engine.groups.PreUpdateGroup;
+import com.erik.engine.groups.PostDrawMember;
+import com.erik.engine.groups.PostUpdateMember;
+import com.erik.engine.groups.PreDrawMember;
+import com.erik.engine.groups.PreUpdateMember;
 
 public class Game implements Runnable {
 	private Window window;
@@ -26,10 +25,10 @@ public class Game implements Runnable {
 	
 	float scale = 1.0f;
 	
-	private ArrayList<PreUpdateGroup> preUpdateGroup = new ArrayList<>();
-	private ArrayList<PostUpdateGroup> postUpdateGroup = new ArrayList<>();
-	private ArrayList<PreDrawGroup> preDrawGroup = new ArrayList<>();
-	private ArrayList<PostDrawGroup> postDrawGroup = new ArrayList<>();
+	private ArrayList<PreUpdateMember> preUpdateGroup = new ArrayList<>();
+	private ArrayList<PostUpdateMember> postUpdateGroup = new ArrayList<>();
+	private ArrayList<PreDrawMember> preDrawGroup = new ArrayList<>();
+	private ArrayList<PostDrawMember> postDrawGroup = new ArrayList<>();
 	
 	public Game(String title, int width, int height) {
 		window = new Window(title, width, height);
@@ -64,11 +63,11 @@ public class Game implements Runnable {
             System.out.println("Refresh rate: " + refreshRate + " Hz");
         }
         
-        for (PreUpdateGroup member : preUpdateGroup) {
+        for (PreUpdateMember member : preUpdateGroup) {
         	member.start();
         }
 
-        for (PostUpdateGroup member : postUpdateGroup) {
+        for (PostUpdateMember member : postUpdateGroup) {
         	member.start();
         }
         
@@ -152,9 +151,8 @@ public class Game implements Runnable {
 	}
 	
 	private void update(double delta) {
-		input.update();
-		
-        for (PreUpdateGroup member : preUpdateGroup) {
+        for (PreUpdateMember member : preUpdateGroup) {
+        	if (!member.active) continue;
         	member.update(delta);
         }
         
@@ -164,15 +162,19 @@ public class Game implements Runnable {
 			gameObjects.get(i).update(delta, gameObjects);
 		}
 
-        for (PostUpdateGroup member : postUpdateGroup) {
+        for (PostUpdateMember member : postUpdateGroup) {
+        	if (!member.active) continue;
         	member.update(delta);
         }
+        
+		input.update();
 	}
 	
 	private void draw(double interpolation) {
 		renderer.clear();
 		
-        for (PreDrawGroup member : preDrawGroup) {
+        for (PreDrawMember member : preDrawGroup) {
+        	if (!member.active) continue;
         	member.draw(renderer);
         }
 		
@@ -185,7 +187,8 @@ public class Game implements Runnable {
 			//renderer.drawGameObject(gameObjects.get(i));
 		}
 		
-        for (PostDrawGroup member : postDrawGroup) {
+        for (PostDrawMember member : postDrawGroup) {
+        	if (!member.active) continue;
         	member.draw(renderer);
         }
 		
@@ -232,35 +235,35 @@ public class Game implements Runnable {
 		this.scale = scale;
 	}
 	
-	public void addToPreUpdateGroup(PreUpdateGroup member) {
+	public void addToPreUpdateGroup(PreUpdateMember member) {
 		preUpdateGroup.add(member);
 	}
 	
-	public void removeFromPreUpdateGroup(PreUpdateGroup member) {
+	public void removeFromPreUpdateGroup(PreUpdateMember member) {
 		preUpdateGroup.remove(member);
 	}
 	
-	public void addToPostUpdateGroup(PostUpdateGroup member) {
+	public void addToPostUpdateGroup(PostUpdateMember member) {
 		postUpdateGroup.add(member);
 	}
 	
-	public void removeFromPostUpdateGroup(PostUpdateGroup member) {
+	public void removeFromPostUpdateGroup(PostUpdateMember member) {
 		postUpdateGroup.remove(member);
 	}
 	
-	public void addToPreDrawGroup(PreDrawGroup member) {
+	public void addToPreDrawGroup(PreDrawMember member) {
 		preDrawGroup.add(member);
 	}
 	
-	public void removeFromPreDrawGroup(PreDrawGroup member) {
+	public void removeFromPreDrawGroup(PreDrawMember member) {
 		preDrawGroup.remove(member);
 	}
 	
-	public void addToPostDrawGroup(PostDrawGroup member) {
+	public void addToPostDrawGroup(PostDrawMember member) {
 		postDrawGroup.add(member);
 	}
 	
-	public void removeFromPostDrawGroup(PostDrawGroup member) {
+	public void removeFromPostDrawGroup(PostDrawMember member) {
 		postDrawGroup.remove(member);
 	}
 }

@@ -5,7 +5,10 @@ import java.util.ArrayList;
 public class Scene {
 	public static final int MAX_LAYER = 50;
 	public double gravity = 300;
+
+	private boolean sorted = false;
 	
+	private ArrayList<GameObject> gameObjects = new ArrayList<>();
 	private ArrayList<ArrayList<GameObject>> layers = new ArrayList<ArrayList<GameObject>>();
 //	private ArrayList<ArrayList<StaticGameObject>> staticLayers = new ArrayList<ArrayList<StaticGameObject>>();
 	
@@ -21,9 +24,7 @@ public class Scene {
 //		this.camera = camera;
 //	}
 	
-	public ArrayList<GameObject> getGameObjects() {
-		ArrayList<GameObject> gameObjects = new ArrayList<>();
-		
+	private void sortGameObjects() {
 		for (int i = 0; i < layers.size(); i++) {
 			ArrayList<GameObject> layer = layers.get(i);
 			
@@ -31,6 +32,12 @@ public class Scene {
 				gameObjects.add(layer.get(j));
 			}
 		}
+
+		sorted = true;
+	}
+	
+	public ArrayList<GameObject> getGameObjects() {
+		if (!sorted) sortGameObjects();
 		
 		return gameObjects;
 	}
@@ -61,6 +68,7 @@ public class Scene {
 		
 		//gameObject.setIndex(layers.get(layer).size());
 		layers.get(layer).add(gameObject);
+		sorted = false;
 		gameObject.setScene(this);
 	}
 	
@@ -85,6 +93,7 @@ public class Scene {
 	public void removeGameObject(GameObject gameObject) {
 //		layers.get(gameObject.layer).remove(gameObject.getIndex());
 		layers.get(gameObject.getLayer()).remove(gameObject);
+		sorted = false;
 	}
 	
 	public void removeGameObjects(GameObject... gameObjects) {
