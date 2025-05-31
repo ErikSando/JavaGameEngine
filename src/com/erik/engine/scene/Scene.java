@@ -1,18 +1,26 @@
-package com.erik.engine;
+package com.erik.engine.scene;
 
 import java.util.ArrayList;
 
+import com.erik.engine.gfx.Image;
+
 public class Scene {
-	public static final int MAX_LAYER = 50;
+	public static final int MAX_LAYER = 20;
 	public double gravity = 1000;
 
 	private boolean sorted = false;
+	private boolean uiSorted = false;
 	
 	private ArrayList<GameObject> gameObjects = new ArrayList<>();
 	private ArrayList<ArrayList<GameObject>> layers = new ArrayList<ArrayList<GameObject>>();
+	
+	private ArrayList<UIObject> uiObjects = new ArrayList<>();
+	private ArrayList<ArrayList<UIObject>> uiLayers = new ArrayList<ArrayList<UIObject>>();
 //	private ArrayList<ArrayList<StaticGameObject>> staticLayers = new ArrayList<ArrayList<StaticGameObject>>();
 	
 //	private Camera camera = new Camera();
+	
+	private Image backgroundImage;
 	
 	public Scene() {}
 	
@@ -25,6 +33,8 @@ public class Scene {
 //	}
 	
 	private void sortGameObjects() {
+		gameObjects.clear();
+		
 		for (int i = 0; i < layers.size(); i++) {
 			ArrayList<GameObject> layer = layers.get(i);
 			
@@ -40,6 +50,26 @@ public class Scene {
 		if (!sorted) sortGameObjects();
 		
 		return gameObjects;
+	}
+	
+	private void sortUIObjects() {
+		uiObjects.clear();
+		
+		for (int i = 0; i < uiLayers.size(); i++) {
+			ArrayList<UIObject> layer = uiLayers.get(i);
+			
+			for (int j = 0; j < layer.size(); j++) {
+				uiObjects.add(layer.get(j));
+			}
+		}
+
+		uiSorted = true;
+	}
+	
+	public ArrayList<UIObject> getUIObjects() {
+		if (!uiSorted) sortUIObjects();
+		
+		return uiObjects;
 	}
 	
 //	public ArrayList<StaticGameObject> getStaticGameObjects() {
@@ -108,5 +138,42 @@ public class Scene {
 		removeGameObject(gameObject);
 		gameObject.layer = layer;
 		addGameObject(gameObject);
+	}
+	
+	public void addUIObject(UIObject uiObject) {
+		int layer = uiObject.getLayer();
+		
+		while (layer >= uiLayers.size()) {
+			uiLayers.add(new ArrayList<UIObject>());
+		}
+		
+		uiLayers.get(layer).add(uiObject);
+		uiSorted = false;
+		uiObject.setScene(this);
+	}
+	
+	public void addUIObjects(UIObject... uiObjects) {
+		for (UIObject uiObject : uiObjects) {
+			addUIObject(uiObject);
+		}
+	}
+	
+	public void removeUIObject(UIObject uiObject) {
+		uiLayers.get(uiObject.getLayer()).remove(uiObject);
+		uiSorted = false;
+	}
+	
+	public void removeUIObjects(UIObject... uiObjects) {
+		for (UIObject uiObject : uiObjects) {
+			removeUIObject(uiObject);
+		}
+	}
+	
+	public void changeUIObjectLayer(UIObject uiObject, int layer) {
+		if (layer < 0 || layer > MAX_LAYER) return;
+		
+		removeUIObject(uiObject);
+		uiObject.layer = layer;
+		addUIObject(uiObject);
 	}
 }

@@ -11,6 +11,8 @@ import com.erik.engine.groups.PostDrawMember;
 import com.erik.engine.groups.PostUpdateMember;
 import com.erik.engine.groups.PreDrawMember;
 import com.erik.engine.groups.PreUpdateMember;
+import com.erik.engine.scene.GameObject;
+import com.erik.engine.scene.Scene;
 
 public class Game implements Runnable {
 	private Window window;
@@ -137,8 +139,8 @@ public class Game implements Runnable {
 			}
 			
 			if (infoTime >= 1.0) {
-				System.out.println("Updates: " + updates);
-				System.out.println("Renders: " + renders);
+				System.out.println("Updates:    " + updates);
+				System.out.println("  Renders:  " + renders);
 				updates = 0;
 				renders = 0;
 				infoTime = 0.0;
@@ -152,12 +154,6 @@ public class Game implements Runnable {
 			draw(unprocessedTime / updateRate);
 			renders++;
 		}
-		
-		dispose();
-	}
-	
-	private void dispose() {
-		
 	}
 	
 	private void update(double delta) {
@@ -188,14 +184,16 @@ public class Game implements Runnable {
         	member.draw(renderer);
         }
 		
-		//renderer.draw();
+		//renderer.render(scene);
 		
 		ArrayList<GameObject> gameObjects = scene.getGameObjects();
 		
-		for (int i = 0; i < gameObjects.size(); i++) {
-			gameObjects.get(i).draw(renderer);
-			//renderer.drawGameObject(gameObjects.get(i));
-		}
+//		for (int i = 0; i < gameObjects.size(); i++) {
+//			gameObjects.get(i).draw(renderer);
+//			//renderer.drawGameObject(gameObjects.get(i));
+//		}
+		
+		renderer.render(scene);
 		
         for (PostDrawMember member : postDrawGroup) {
         	if (!member.active) continue;

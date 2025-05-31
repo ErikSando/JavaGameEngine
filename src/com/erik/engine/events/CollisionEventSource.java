@@ -3,7 +3,7 @@ package com.erik.engine.events;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.erik.engine.GameObject;
+import com.erik.engine.scene.GameObject;
 
 public class CollisionEventSource {
 	private final List<CollisionEventListener> listeners = new ArrayList<>();

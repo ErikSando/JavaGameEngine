@@ -79,7 +79,6 @@ public class Window {
 		
 		canvas.createBufferStrategy(3);
 		bufferStrategy = canvas.getBufferStrategy();
-		//graphics = bufferStrategy.getDrawGraphics();
 	}
 	
 	public void update() {

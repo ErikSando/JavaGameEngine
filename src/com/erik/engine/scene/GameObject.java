@@ -1,11 +1,12 @@
-package com.erik.engine;
+package com.erik.engine.scene;
 
 import java.util.ArrayList;
 
+import com.erik.engine.Colour;
+import com.erik.engine.Renderer;
 import com.erik.engine.events.CollisionEventSource;
 import com.erik.engine.gfx.Image;
 import com.erik.engine.shapes.Rectd;
-import com.erik.engine.shapes.Recti;
 import com.erik.engine.utils.Utils;
 import com.erik.engine.vector2.Vector2;
 import com.erik.engine.vector2.Vector2d;
@@ -16,9 +17,9 @@ public class GameObject {
 	public Vector2d velocity = Vector2d.zero();
 	public Vector2d acceleration = Vector2d.zero();
 	public Vector2i scale;
-	public int colour = 0xffffff;
+	public int colour = Colour.White;
 	
-	private double opacity = 1.0;
+	protected double opacity = 1.0;
 	int layer = 0; // package private
 	
 	protected Image image;
@@ -188,13 +189,15 @@ public class GameObject {
 		hasImage = true;
 	}
 	
+	public boolean hasImage() {
+		return hasImage;
+	}
+	
 	public int getLayer() {
 		return layer;
 	}
 	
 	public void setLayer(int layer) {
-		if (layer < 0) return;
-		if (layer > 20) return; // make this better in the future
 		scene.changeGameObjectLayer(this, layer);
 	}
 	

@@ -1,8 +1,8 @@
 package com.erik.game.blocks;
 
-import com.erik.engine.GameObject;
-import com.erik.engine.Scene;
 import com.erik.engine.gfx.Image;
+import com.erik.engine.scene.GameObject;
+import com.erik.engine.scene.Scene;
 
 public class Dirt extends GameObject {
 	public Dirt(Scene scene, int x, int y, int w) {

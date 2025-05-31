@@ -1,6 +1,6 @@
 package com.erik.engine.events;
 
-import com.erik.engine.GameObject;
+import com.erik.engine.scene.GameObject;
 
 public class CollisionEvent {
 	private final CollisionEventSource source;

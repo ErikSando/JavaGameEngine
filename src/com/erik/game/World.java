@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import com.erik.engine.GameObject;
-import com.erik.engine.Scene;
+import com.erik.engine.scene.GameObject;
+import com.erik.engine.scene.Scene;
 import com.erik.game.blocks.Dirt;
 import com.erik.game.blocks.Grass;
 

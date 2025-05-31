@@ -2,11 +2,11 @@ package com.erik.game;
 
 import com.erik.engine.Colour;
 import com.erik.engine.Game;
-import com.erik.engine.GameObject;
 import com.erik.engine.InputHandler;
 import com.erik.engine.enums.InputAxis;
 import com.erik.engine.enums.KeyCode;
 import com.erik.engine.groups.PostUpdateMember;
+import com.erik.engine.scene.GameObject;
 import com.erik.engine.utils.Utils;
 import com.erik.engine.vector2.Vector2;
 import com.erik.engine.vector2.Vector2d;
@@ -25,7 +25,7 @@ public class Player extends PostUpdateMember {
 		super(game);
 		
 		gameObject = new GameObject(game.getScene(), position, new Vector2i(50, 100));
-		gameObject.colour = Colour.red;
+		gameObject.colour = Colour.Red;
 		
 		input = game.getInputHandler();
 	}
