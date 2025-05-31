@@ -3,6 +3,29 @@ package com.erik.engine.vector2;
 public class Vector2 {
 	public Vector2() {}
 	
+	public static Vector2d tod(Vector2f v) {
+		return new Vector2d((double) v.x, (double) v.y);
+	}
+	
+	public static Vector2d tod(Vector2i v) {
+		return new Vector2d((double) v.x, (double) v.y);
+	}
+	
+	public static Vector2f tof(Vector2d v) {
+		return new Vector2f((float) v.x, (float) v.y);
+	}
+	
+	public static Vector2f tof(Vector2i v) {
+		return new Vector2f((float) v.x, (float) v.y);
+	}
+	public static Vector2i toi(Vector2d v) {
+		return new Vector2i((int) Math.round(v.x), (int) Math.round(v.y));
+	}
+	
+	public static Vector2i toi(Vector2f v) {
+		return new Vector2i((int) Math.round(v.x), (int) Math.round(v.y));
+	}
+	
 	public static double dot(Vector2d v1, Vector2d v2) {
 		return v1.x * v2.x + v1.y * v2.y;
 	}
@@ -70,6 +93,12 @@ public class Vector2 {
 	
 	public static Vector2i lerp(Vector2i v1, Vector2i v2, double t) {
 		return v1.plus(v2.minus(v1).multiplied(t));
+	}
+	
+	public static Vector2i preciseLerpi(Vector2i v1, Vector2i v2, double t) {
+		double dx = (v2.x - v1.x) * t;
+		double dy = (v2.y - v1.y) * t;
+		return new Vector2i(v1.x + (int) Math.round(dx), v1.y + (int) Math.round(dy));
 	}
 	
 	public static double angle(Vector2d v1, Vector2d v2) {

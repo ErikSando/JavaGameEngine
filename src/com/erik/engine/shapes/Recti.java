@@ -2,21 +2,21 @@ package com.erik.engine.shapes;
 
 import com.erik.engine.vector2.Vector2i;
 
-public class Rectangle {
+public class Recti {
 	public int x, y, w, h;
 	
-	public Rectangle(int x, int y, int w, int h) {
+	public Recti(int x, int y, int w, int h) {
 		this.x = x;
 		this.y = y;
 		this.w = w;
 		this.h = h;
 	}
 	
-	public Rectangle(Vector2i position, Vector2i scale) {
-		x = (int) position.x;
-		y = (int) position.y;
-		w = (int) scale.x;
-		h = (int) scale.y;
+	public Recti(Vector2i position, Vector2i scale) {
+		x = position.x;
+		y = position.y;
+		w = scale.x;
+		h = scale.y;
 	}
 	
 	public Vector2i getPosition() {

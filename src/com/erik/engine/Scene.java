@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Scene {
 	public static final int MAX_LAYER = 50;
-	public double gravity = 300;
+	public double gravity = 1000;
 
 	private boolean sorted = false;
 	

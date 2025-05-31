@@ -4,6 +4,7 @@ import java.awt.image.DataBufferInt;
 
 import com.erik.engine.gfx.Image;
 import com.erik.engine.gfx.ImageTile;
+import com.erik.engine.vector2.Vector2i;
 
 public class Renderer {
 	private int pixelW, pixelH;
@@ -66,8 +67,9 @@ public class Renderer {
 	}
 	
 	public void drawImage(Image image, int x, int y) {
-		int offsetX = x - camera.position.x;
-		int offsetY = y - camera.position.y;
+		Vector2i camPos = camera.getPositioni();
+		int offsetX = x - camPos.x;
+		int offsetY = y - camPos.y;
 		
 		if (offsetX < -image.getWidth() || offsetY < -image.getHeight()) return;
 		if (offsetX >= pixelW || offsetY >= pixelH) return;
@@ -92,9 +94,14 @@ public class Renderer {
 		}
 	}
 	
+	public void drawImage(Image image, double x, double y) {
+		drawImage(image, (int) Math.round(x), (int) Math.round(y));
+	}
+	
 	public void drawImageTile(ImageTile image, int x, int y, int tileX, int tileY) {
-		int offsetX = x - camera.position.x;
-		int offsetY = y - camera.position.y;
+		Vector2i camPos = camera.getPositioni();
+		int offsetX = x - camPos.x;
+		int offsetY = y - camPos.y;
 		
 		if (offsetX < -image.getWidth() || offsetY < -image.getHeight()) return;
 		if (offsetX >= pixelW || offsetY >= pixelH) return;
@@ -120,9 +127,14 @@ public class Renderer {
 		}
 	}
 	
+	public void drawImageTile(ImageTile image, double x, double y) {
+		drawImage(image, (int) Math.round(x), (int) Math.round(y));
+	}
+	
 	public void drawRectangle(int x, int y, int w, int h, int colour, double opacity) {
-		int offsetX = x - camera.position.x;
-		int offsetY = y - camera.position.y;
+		Vector2i camPos = camera.getPositioni();
+		int offsetX = x - camPos.x;
+		int offsetY = y - camPos.y;
 		
 		if (offsetX < -w || offsetY < -h) return;
 		if (offsetX >= pixelW || offsetY >= pixelH) return;
@@ -148,6 +160,10 @@ public class Renderer {
 				}
 			}
 		}
+	}
+	
+	public void drawRectangle(double x, double y, int w, int h, int colour, double opacity) {
+		drawRectangle((int) Math.round(x), (int) Math.round(y), w, h, colour, opacity);
 	}
 	
 	public void drawGameObject(GameObject gameObject) {

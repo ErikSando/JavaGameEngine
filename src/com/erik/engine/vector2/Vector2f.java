@@ -77,6 +77,14 @@ public class Vector2f {
 		return new Vector2f(x / k, y / k);
 	}
 	
+	public Vector2f divided(double k) {
+		return new Vector2f(x / (float) k, y / (float) k);
+	}
+	
+	public Vector2f divided(int k) {
+		return new Vector2f(x / k, y / k);
+	}
+	
 	public Vector2f inversed() {
 		return new Vector2f(-x, -y);
 	}

@@ -10,7 +10,7 @@ import com.erik.game.blocks.Dirt;
 import com.erik.game.blocks.Grass;
 
 public class World {
-	private int tileSize = 5;
+	private int tileSize = 64;
 	
 	public World() {}
 	

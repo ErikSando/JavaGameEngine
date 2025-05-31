@@ -8,7 +8,7 @@ public class Grass extends GameObject {
 	public Grass(Scene scene, int x, int y, int w) {
 		super(scene, x, y, w, w);
 
-		setImage(new Image("blocks/dirt.png"));
+		setImage(new Image("blocks/grass.png"));
 		update = false;
 	}
 }

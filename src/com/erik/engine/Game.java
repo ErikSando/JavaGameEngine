@@ -21,7 +21,8 @@ public class Game implements Runnable {
 	private Thread thread;
 
 	private boolean running = false;
-	private double maxFPS = 60.0f;
+	private int maxFPS = 60;
+	private int maxRendersPerSecond = 60;
 	
 	float scale = 1.0f;
 	
@@ -59,7 +60,8 @@ public class Game implements Runnable {
             System.out.println("Refresh rate is unknown, using " + (int) maxFPS + " as maximum FPS");
         }
         else {
-            maxFPS = (double) refreshRate;
+            maxFPS = refreshRate;
+            maxRendersPerSecond = refreshRate;
             System.out.println("Refresh rate: " + refreshRate + " Hz");
         }
         
@@ -84,26 +86,30 @@ public class Game implements Runnable {
 		running = true;
 		
 		boolean render = false;
-		double firstTime = 0.0;
+		double currentTime = 0.0;
 		double lastTime = System.nanoTime() / 1000000000.0;
+		double lastTimeR = lastTime;
 		double deltaTime = 0.0;
 		double unprocessedTime = 0.0;
 		//double maxDeltaTime = 1; // not sure what to make this, or if i even need it
 		
-		double frameTime = 0.0;
+		double infoTime = 0.0;
 		int fps = 0;
-		int frames = 0;
+		int updates = 0;
+		int renders = 0;
 		
 		int updateCount = 0;
 		int maxUpdates = 5;
+		
+		double renderRate = 1.0 / (double) maxRendersPerSecond;
 		
 		while (running) {
 			render = false;
 			updateCount = 0;
 			
-			firstTime = System.nanoTime() / 1000000000.0;
-			deltaTime = firstTime - lastTime;
-			lastTime = firstTime;
+			currentTime = System.nanoTime() / 1000000000.0;
+			deltaTime = currentTime - lastTime;
+			lastTime = currentTime;
 			
 //			if (deltaTime > maxDeltaTime) {
 //				deltaTime = maxDeltaTime;
@@ -111,26 +117,31 @@ public class Game implements Runnable {
 //			}
 			
 			unprocessedTime += deltaTime;
-			frameTime += deltaTime;
+			infoTime += deltaTime;
 			
-			double updateRate = 1.0 / maxFPS;
+			double updateRate = 1.0 / (double) maxFPS;
 			
 			while (unprocessedTime >= updateRate && updateCount < maxUpdates) {
 				unprocessedTime -= updateRate;
 
-//				input.update();
 				update(updateRate);
-
+				updates++;
+				
 				updateCount++;
-				render = true;
+//				render = true;
 			}
 			
-			if (frameTime >= 1.0) {
-				//fps = (int) Math.round(frames / frameTime);
-				fps = frames;
-				frameTime = 0.0;
-				frames = 0;
-				System.out.println("FPS: " + fps);
+			if (currentTime - lastTimeR >= renderRate) {
+				render = true;
+				lastTimeR = currentTime;
+			}
+			
+			if (infoTime >= 1.0) {
+				System.out.println("Updates: " + updates);
+				System.out.println("Renders: " + renders);
+				updates = 0;
+				renders = 0;
+				infoTime = 0.0;
 			}
 			
 			if (!render) {
@@ -139,8 +150,7 @@ public class Game implements Runnable {
 			}
 			
 			draw(unprocessedTime / updateRate);
-			
-			frames++;
+			renders++;
 		}
 		
 		dispose();
@@ -201,6 +211,10 @@ public class Game implements Runnable {
 	
 	public void setScene(Scene scene) {
 		this.scene = scene;
+	}
+	
+	public Renderer getRenderer() {
+		return renderer;
 	}
 	
 	public Window getWindow() {

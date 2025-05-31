@@ -4,13 +4,15 @@ import java.util.ArrayList;
 
 import com.erik.engine.events.CollisionEventSource;
 import com.erik.engine.gfx.Image;
-import com.erik.engine.shapes.Rectangle;
+import com.erik.engine.shapes.Rectd;
+import com.erik.engine.shapes.Recti;
 import com.erik.engine.utils.Utils;
+import com.erik.engine.vector2.Vector2;
 import com.erik.engine.vector2.Vector2d;
 import com.erik.engine.vector2.Vector2i;
 
 public class GameObject {
-	public Vector2i position;
+	public Vector2d position;
 	public Vector2d velocity = Vector2d.zero();
 	public Vector2d acceleration = Vector2d.zero();
 	public Vector2i scale;
@@ -21,6 +23,7 @@ public class GameObject {
 	
 	protected Image image;
 	protected boolean hasImage = false;
+	protected boolean hasAnimation = false;
 	
 	protected Scene scene;
 	//private int index;
@@ -33,6 +36,16 @@ public class GameObject {
 	public boolean canCollide = true;
 	public boolean canTouch = true;
 	
+	private boolean collisionLeft = false;
+	private boolean collisionRight = false;
+	private boolean collisionAbove = false;
+	private boolean collisionBelow = false;
+	
+	private boolean collisionLeftNext = false;
+	private boolean collisionRightNext = false;
+	private boolean collisionAboveNext = false;
+	private boolean collisionBelowNext = false;
+	
 	public String tag = "none";
 	
 	public CollisionEventSource collisionEnter = new CollisionEventSource();
@@ -41,27 +54,27 @@ public class GameObject {
 	public CollisionEventSource touchEnter = new CollisionEventSource();
 	public CollisionEventSource touchExit = new CollisionEventSource();
 	
-	public GameObject(Scene scene, int x, int y, int w, int h) {
-		position = new Vector2i(x, y);
+	public GameObject(Scene scene, double x, double y, int w, int h) {
+		position = new Vector2d(x, y);
 		scale = new Vector2i(w, h);
 		scene.addGameObject(this);
 		setMass(1.0);
 	}
 	
-	public GameObject(Scene scene, Vector2i position, Vector2i scale) {
+	public GameObject(Scene scene, Vector2d position, Vector2i scale) {
 		this.position = position;
 		this.scale = scale;
 		scene.addGameObject(this);
 		setMass(1.0);
 	}
 	
-	public GameObject(int x, int y, int w, int h) {
-		position = new Vector2i(x, y);
+	public GameObject(double x, double y, int w, int h) {
+		position = new Vector2d(x, y);
 		scale = new Vector2i(w, h);
 		setMass(1.0);
 	}
 	
-	public GameObject(Vector2i position, Vector2i scale) {
+	public GameObject(Vector2d position, Vector2i scale) {
 		this.position = position;
 		this.scale = scale;
 		setMass(1.0);
@@ -70,65 +83,84 @@ public class GameObject {
 	public void update(double delta, ArrayList<GameObject> gameObjects) {
 		if (!update) return;
 		
-//		if (useGravity) acceleration.y = scene.gravity;
-//	
-//		velocity.add(acceleration.multiplied(delta));
-//		
-//		if (velocity.y > terminalVelocity) {
-//			velocity.y = terminalVelocity; // change this to use drag, like a real life object falling faster than its terminal velocity
-//		}
+		if (useGravity) acceleration.y = scene.gravity;
+	
+		velocity.add(acceleration.multiplied(delta));
 		
-//		Rectangle hitbox = getRectangle();
-//		Rectangle nextFrameX = new Rectangle(position.plus(new Vector2d(velocity.x * delta, 0.0)), scale);
-//		Rectangle nextFrameY = new Rectangle(position.plus(new Vector2d(0.0, velocity.y * delta)), scale);
-//		
-//		for (GameObject gameObject : gameObjects) {
-//			if (gameObject == this) continue;
-//			
-//			boolean willCollide = canCollide && gameObject.canCollide;
-//			
-//			boolean colliding = false;
-//			boolean touching = false;
-//			
-//			Rectangle otherRect = gameObject.getRectangle();
-//			
-//			if (Utils.RectangleIntersection(nextFrameX, otherRect)) {
-//				if (canTouch) touching = true;
-//				
-//				if (willCollide) {
-//					colliding = true;
-//					
-//					if (velocity.x > 0) {
-//						velocity.x = (otherRect.left() - hitbox.right()) / delta;
-//					}
-//					else if (velocity.x < 0) {
-//						velocity.x = (otherRect.right() - hitbox.left()) / delta;
-//					}
-//				}
-//			}
-//			
-//			if (Utils.RectangleIntersection(nextFrameY, otherRect)) {
-//				if (canTouch) touching = true;
-//				
-//				if (willCollide) {
-//					colliding = true;
-//					
-//					if (velocity.y >= 0) {
-//						velocity.y = (otherRect.top() - hitbox.bottom()) / delta;
-//					}
-//					else if (velocity.y < 0) {
-//						velocity.y = (otherRect.bottom() - hitbox.top()) / delta;
-//					}
-//				}
-//			}
-//		}
+		if (velocity.y > terminalVelocity) {
+			velocity.y = terminalVelocity; // change this to use drag, like a real life object falling faster than its terminal velocity
+		}
+		
+		collisionLeft = collisionLeftNext;
+		collisionRight = collisionRightNext;
+		collisionAbove = collisionAboveNext;
+		collisionBelow = collisionBelowNext;
+		
+		collisionLeftNext = false;
+		collisionRightNext = false;
+		collisionAboveNext = false;
+		collisionBelowNext = false;
+		
+		// need to use Rectd so small velocities dont get rounded off
+		Rectd hitbox = getRectd();
+		Rectd nextFrameX = new Rectd(position.plus(new Vector2d(velocity.x * delta, 0.0)), Vector2.tod(scale));
+		Rectd nextFrameY = new Rectd(position.plus(new Vector2d(0.0, velocity.y * delta)), Vector2.tod(scale));
+		
+		//double increase = nextFrameY.getPosition().y - position.y;
+		
+		for (GameObject gameObject : gameObjects) {
+			if (gameObject == this) continue;
+			
+			boolean willCollide = canCollide && gameObject.canCollide;
+			
+			boolean colliding = false;
+			boolean touching = false;
+			
+			Rectd otherRect = gameObject.getRectd();
+			
+			// later, make it so that the closest collision in each direction is tracked, and then when collision enter and exit events
+			// are added, only fire for the closest collisions
+			
+			if (Utils.RectangleIntersection(nextFrameX, otherRect)) {
+				if (canTouch) touching = true;
+				
+				if (willCollide) {
+					colliding = true;
+					
+					if (velocity.x > 0) {
+						collisionRightNext = true;
+						velocity.x = (otherRect.left() - hitbox.right()) / delta;
+					}
+					else if (velocity.x < 0) {
+						collisionLeftNext = true;
+						velocity.x = (otherRect.right() - hitbox.left()) / delta;
+					}
+				}
+			}
+			
+			if (Utils.RectangleIntersection(nextFrameY, otherRect)) {
+				if (canTouch) touching = true;
+				
+				if (willCollide) {
+					colliding = true;
+					
+					if (velocity.y >= 0) {
+						collisionBelowNext = true;
+						velocity.y = (otherRect.top() - hitbox.bottom()) / delta;
+					}
+					else if (velocity.y < 0) {
+						collisionAboveNext = true;
+						velocity.y = (otherRect.bottom() - hitbox.top()) / delta;
+						nextFrameY.y = position.y + (int) (velocity.y * delta);
+					}
+				}
+			}
+		}
 		
 		position.add(velocity.multiplied(delta));
 	}
 	
 	public void draw(Renderer renderer) {
-		System.out.println("Pos: " + position);
-		
 		if (hasImage) {
 			renderer.drawImage(image, position.x, position.y);
 			return;
@@ -152,7 +184,7 @@ public class GameObject {
 			return;
 		}
 		
-		this.image = image.getScaled((int) scale.x, (int) scale.y);
+		this.image = image.getScaled(scale.x, scale.y);
 		hasImage = true;
 	}
 	
@@ -184,14 +216,16 @@ public class GameObject {
 		if (mass < 0.0) return;
 		this.mass = mass;
 		
-		terminalVelocity = 2000 * Math.sqrt(scene.gravity * mass / scale.x);
-		
-		System.out.println(terminalVelocity);
+		terminalVelocity = 200 * Math.sqrt(scene.gravity * mass / scale.x);
 	}
 
-	public Rectangle getRectangle() {
-		return new Rectangle((int) position.x, (int) position.y, (int) scale.x, (int) scale.y);
+	public Rectd getRectd() {
+		return new Rectd(position, Vector2.tod(scale));
 	}
+	
+//	public Recti getRecti() {
+//		return new Recti(Vector2.toi(position), scale);
+//	}
 	
 	public Scene getScene() {
 		return scene;
@@ -199,6 +233,22 @@ public class GameObject {
 	
 	public void setScene(Scene scene) {
 		this.scene = scene;
+	}
+	
+	public boolean collisionLeft() {
+		return collisionLeft;
+	}
+
+	public boolean collisionRight() {
+		return collisionRight;
+	}
+
+	public boolean collisionAbove() {
+		return collisionAbove;
+	}
+
+	public boolean collisionBelow() {
+		return collisionBelow;
 	}
 	
 //	public int getIndex() {

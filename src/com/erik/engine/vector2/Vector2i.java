@@ -73,8 +73,24 @@ public class Vector2i {
 		return new Vector2i((int) (x * k), (int) (y * k));
 	}
 	
+	public Vector2i multiplied(float k) {
+		return new Vector2i((int) (x * k), (int) (y * k));
+	}
+	
+	public Vector2i multiplied(int k) {
+		return new Vector2i(x * k, y * k);
+	}
+	
 	public Vector2i divided(double k) {
 		return new Vector2i((int) (x / k), (int) (y / k));
+	}
+	
+	public Vector2i divided(float k) {
+		return new Vector2i((int) (x / k), (int) (y / k));
+	}
+
+	public Vector2i divided(int k) {
+		return new Vector2i(x / k, y / k);
 	}
 	
 	public Vector2i inversed() {
@@ -91,6 +107,11 @@ public class Vector2i {
 		y += other.y;
 	}
 	
+	public void add(Vector2f other) {
+		x += other.x;
+		y += other.y;
+	}
+	
 	public void subtract(Vector2i other) {
 		x -= other.x;
 		y -= other.y;
@@ -101,12 +122,37 @@ public class Vector2i {
 		y -= (int) other.y;
 	}
 	
+	public void subtract(Vector2f other) {
+		x -= (int) other.x;
+		y -= (int) other.y;
+	}
+	
 	public void multiply(double k) {
 		x *= k;
 		y *= k;
 	}
 	
+	public void multiply(float k) {
+		x *= k;
+		y *= k;
+	}
+	
+	public void multiply(int k) {
+		x *= k;
+		y *= k;
+	}
+	
 	public void divide(double k) {
+		x /= k;
+		y /= k;
+	}
+	
+	public void divide(float k) {
+		x /= k;
+		y /= k;
+	}
+	
+	public void divide(int k) {
 		x /= k;
 		y /= k;
 	}
